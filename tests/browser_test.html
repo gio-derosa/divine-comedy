@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>body{margin:0}#out{position:absolute;left:-9999px}iframe{border:0;display:block}</style>
+<pre id="out">RUNNING</pre>
+<iframe id="f" src="/site/index.html#it/purgatorio/26" width="400" height="800"></iframe>
+<script>
+var out = [], f = document.getElementById("f");
+function log(ok, msg) { out.push((ok ? "PASS " : "FAIL ") + msg); }
+function wait(cond, ms) {
+  return new Promise(function (res, rej) {
+    var t0 = Date.now();
+    (function poll() {
+      try { if (cond()) return res(); } catch (e) {}
+      if (Date.now() - t0 > ms) return rej(new Error("timeout"));
+      setTimeout(poll, 20);
+    })();
+  });
+}
+f.onload = async function () {
+  var w = f.contentWindow, d = w.document;
+  var q = function (s) { return d.querySelector(s); }, qa = function (s) { return d.querySelectorAll(s); };
+  try {
+    await wait(function () { return qa(".line").length > 0; }, 5000);
+    log(qa(".line").length === 148, "Purg 26 has 148 lines (" + qa(".line").length + ")");
+    var nums = Array.prototype.map.call(qa(".line .num"), function (e) { return +e.textContent; });
+    log(nums.length === 49 && nums[0] === 3 && nums[48] === 147 && nums.every(function (n) { return n % 3 === 0; }), "numbers every 3 lines: " + nums.slice(0, 4) + "... count " + nums.length);
+    log(qa(".tercet").length === 50, "50 tercet groups (" + qa(".tercet").length + ")");
+    var tags = Array.prototype.map.call(qa(".tag"), function (e) { return +e.closest(".line").dataset.n; });
+    log(tags.join() === "140,141,142,143,144,145,146,147", "Provençal tags on " + tags.join());
+    var l1 = q('.line[data-n="1"]'), l2 = q('.line[data-n="2"]');
+    var orig1 = l1.textContent, orig2 = l2.textContent;
+    l1.click();
+    log(l1.classList.contains("is-translation") && l1.textContent !== orig1 && l1.querySelector(".text").lang === "en", "click shows translation: " + l1.textContent);
+    log(!l2.classList.contains("is-translation") && l2.textContent === orig2, "other line unaffected");
+    log(w.getComputedStyle(l1).fontStyle === "italic" && w.getComputedStyle(l1).color !== w.getComputedStyle(l2).color, "translation styled distinctly");
+    l1.click();
+    log(!l1.classList.contains("is-translation") && l1.textContent === orig1, "second click restores original");
+    l1.click(); l1.click(); l1.click();
+    log(l1.classList.contains("is-translation"), "toggles indefinitely (3 more clicks -> translation)");
+    l2.click();
+    log(l1.classList.contains("is-translation") && l2.classList.contains("is-translation"), "lines toggle independently");
+
+    q("#tab-en").click();
+    await wait(function () { return w.DC_LONGFELLOW && q('.line[data-n="1"]').textContent.indexOf("While on the brink") === 0; }, 5000);
+    log(true, "English tab shows Longfellow: " + q('.line[data-n="1"]').textContent);
+    log(!w.DC_LONGFELLOW === false && d.documentElement.lang === "en", "html lang switched to en");
+    var e1 = q('.line[data-n="1"]'); e1.click();
+    log(e1.querySelector(".text").lang === "it", "English tab translation is Italian: " + e1.textContent);
+
+    q("#tab-it").click();
+    await wait(function () { return q('.line[data-n="1"]').classList.contains("is-translation"); }, 2000);
+    log(true, "Italian tab kept its toggled lines after switching back");
+
+    w.location.hash = "#it/inferno/34";
+    await wait(function () { return q("#canto-title").textContent.indexOf("XXXIV") > 0; }, 2000);
+    log(qa(".line").length === 139, "Inferno 34 has 139 lines");
+    q(".controls .next").click();
+    await wait(function () { return q("#canto-title").textContent.indexOf("Purgatorio") === 0; }, 2000);
+    log(q("#canto-title").textContent === "Purgatorio · Canto I" && w.location.hash === "#it/purgatorio/1", "next crosses cantica: " + q("#canto-title").textContent + " " + w.location.hash);
+    q(".controls .prev").click(); await new Promise(function (r) { setTimeout(r, 50); });
+    log(q("#canto-title").textContent === "Inferno · Canto XXXIV", "prev goes back");
+    w.location.hash = "#it/inferno/1";
+    await wait(function () { return q("#canto-title").textContent === "Inferno · Canto I"; }, 2000);
+    log(q(".controls .prev").disabled, "prev disabled at Inferno I");
+    q('.cantiche button[data-cantica="Paradiso"]').click();
+    q("#canto-select").value = "33"; q("#canto-select").dispatchEvent(new Event("change"));
+    await wait(function () { return q("#canto-title").textContent === "Paradiso · Canto XXXIII"; }, 2000);
+    log(q(".controls .next").disabled && qa(".line").length === 145, "Paradiso 33: 145 lines, next disabled");
+    log(q('.line[data-n="145"]').textContent === "l’amor che move il sole e l’altre stelle.", "last line: " + q('.line[data-n="145"]').textContent);
+    log(d.documentElement.scrollWidth <= 400, "no horizontal scroll at 400px (scrollWidth " + d.documentElement.scrollWidth + ")");
+    // leave a representative state on screen for screenshots
+    w.location.hash = "#it/purgatorio/26";
+    await wait(function () { return q("#canto-title").textContent === "Purgatorio · Canto XXVI"; }, 2000);
+    q('.line[data-n="139"]').click(); q('.line[data-n="142"]').click();
+    q('.line[data-n="133"]').scrollIntoView();
+  } catch (e) { log(false, "exception: " + e.message); }
+  document.getElementById("out").textContent = out.join("\n");
+};
+</script>

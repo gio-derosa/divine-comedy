@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>body{margin:0}iframe{border:0;display:block}</style>
+<body>
+<script>
+// usage: frame.html?w=360&h=780&dark=1&click=1,2#it/inferno/1
+var p = new URLSearchParams(location.search);
+var f = document.createElement("iframe");
+f.width = p.get("w") || 360; f.height = p.get("h") || 780;
+f.src = "/site/index.html" + location.hash;
+f.onload = function () {
+  var d = f.contentDocument;
+  if (p.get("dark") && d.documentElement.getAttribute("data-theme") !== "dark") d.querySelector(".theme-toggle").click();
+  var t = setInterval(function () {
+    if (!d.querySelector(".line")) return;
+    clearInterval(t);
+    (p.get("click") || "").split(",").filter(Boolean).forEach(function (n) { d.querySelector('.line[data-n="' + n + '"]').click(); });
+    if (p.get("scroll")) d.querySelector('.line[data-n="' + p.get("scroll") + '"]').scrollIntoView();
+  }, 20);
+};
+document.body.appendChild(f);
+</script>

@@ -1,0 +1,281 @@
+:root {
+  --bg: #fbf8f1;
+  --surface: #f3eee2;
+  --text: #2a2622;
+  --muted: #6f675c;
+  --rule: #ddd5c4;
+  --accent: #8a2c1d;          /* rubric red */
+  --accent-contrast: #fff;
+  --translation: #245a7a;     /* distinct ink for translations */
+  --translation-bg: #e9f0f3;
+  --tag-bg: #efe3c8;
+  --tag-text: #6b4e12;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1916;
+    --surface: #25221e;
+    --text: #e8e2d6;
+    --muted: #a39a8b;
+    --rule: #3a352e;
+    --accent: #e0826d;
+    --accent-contrast: #1b1916;
+    --translation: #8cc3e0;
+    --translation-bg: #1f2b31;
+    --tag-bg: #3b3222;
+    --tag-text: #e2c98f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b1916;
+  --surface: #25221e;
+  --text: #e8e2d6;
+  --muted: #a39a8b;
+  --rule: #3a352e;
+  --accent: #e0826d;
+  --accent-contrast: #1b1916;
+  --translation: #8cc3e0;
+  --translation-bg: #1f2b31;
+  --tag-bg: #3b3222;
+  --tag-text: #e2c98f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+button, select { font: inherit; color: inherit; }
+a { color: var(--accent); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* Header and tabs */
+.masthead {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 16px 0;
+  text-align: center;
+}
+/* Theme toggle sits in the top-right corner; the title reserves equal space on
+   both sides so it stays centered and never runs under the button. */
+.theme-toggle {
+  position: absolute;
+  top: 1.25rem;
+  right: 16px;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  .theme-toggle:hover { color: var(--text); border-color: var(--rule); background: var(--surface); }
+}
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle[aria-pressed="true"] .icon-sun { display: block; }
+.theme-toggle[aria-pressed="true"] .icon-moon { display: none; }
+h1 {
+  margin: 0 2.75rem 1rem;
+  font-weight: normal;
+  font-size: 1.75rem;
+  letter-spacing: 0.04em;
+  font-variant: small-caps;
+  color: var(--accent);
+}
+.tabs {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid var(--rule);
+}
+.tabs button {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.5rem 1.25rem;
+  margin-bottom: -1px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+.tabs button[aria-selected="true"] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* Navigation controls */
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.6rem 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  justify-content: center;
+  align-items: center;
+}
+.cantiche { display: flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.cantiche button {
+  background: var(--surface);
+  border: none;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.cantiche button + button { border-left: 1px solid var(--rule); }
+.cantiche button[aria-pressed="true"] { background: var(--accent); color: var(--accent-contrast); }
+
+.canto-nav { display: flex; align-items: center; gap: 0.35rem; }
+.canto-nav button, .canto-pick select {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  min-height: 2.25rem;
+}
+.canto-nav button { width: 2.25rem; cursor: pointer; font-size: 1.25rem; line-height: 1; }
+.canto-pick select { padding: 0 0.5rem; font-size: 0.95rem; cursor: pointer; }
+button:disabled { opacity: 0.35; cursor: default; }
+button:focus-visible, select:focus-visible, .line:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reader */
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 16px 2rem;
+}
+main:focus { outline: none; }
+h2 {
+  margin: 0;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1.35rem;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+}
+.hint {
+  margin: 0.25rem 0 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.tercet { margin: 0 0 1em; }
+.line {
+  position: relative;
+  margin: 0;
+  /* 3rem gutter holds line numbers; wrapped continuation lines hang 1em further in */
+  padding: 0.05em 0.4em 0.05em calc(3rem + 1em);
+  text-indent: -1em;
+  border-radius: 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  .line:hover { background: var(--surface); }
+}
+.line .num {
+  position: absolute;
+  left: 0;
+  width: 2.2rem;
+  text-align: right;
+  text-indent: 0;
+  font-size: 0.75rem;
+  line-height: 2.1;
+  color: var(--muted);
+  font-variant-numeric: oldstyle-nums;
+  user-select: none;
+}
+.line.is-translation {
+  background: var(--translation-bg);
+  color: var(--translation);
+  font-style: italic;
+}
+.tag {
+  display: inline-block;
+  margin-right: 0.5em;
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 0.7rem;
+  font-style: normal;
+  letter-spacing: 0.03em;
+  text-indent: 0;
+  vertical-align: 0.15em;
+  line-height: 1.5;
+}
+.loading, .error { text-align: center; color: var(--muted); }
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+.bottom-nav button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0.4rem 0;
+  font-size: 1rem;
+}
+.bottom-nav button:disabled { visibility: hidden; }
+
+.credits {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem 16px 2.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.credits p { margin: 0 0 0.6rem; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.05rem; }
+  .masthead { padding-top: 1rem; }
+  .theme-toggle { top: 0.6rem; right: 8px; }
+  h1 { font-size: 1.5rem; margin-left: 2.5rem; margin-right: 2.5rem; }
+  .line { padding-left: calc(2.4rem + 1em); }
+  .line .num { width: 1.8rem; }
+  .cantiche button { padding: 0.3rem 0.55rem; }
+}
+@media (max-width: 400px) {
+  body { font-size: 1rem; }
+  h1 { font-size: 1.3rem; letter-spacing: 0.02em; }
+  main { padding-left: 8px; padding-right: 8px; }
+  .line { padding-left: calc(1.9rem + 0.75em); padding-right: 0.25em; text-indent: -0.75em; }
+  .line .num { width: 1.5rem; }
+  .tag { font-size: 0.65rem; margin-right: 0.35em; }
+}

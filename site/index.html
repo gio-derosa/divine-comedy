@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La Divina Commedia</title>
+  <meta name="description" content="Read Dante's Divine Comedy line by line in Italian (Petrocchi) and English (Longfellow), with a literal translation of each line one tap away.">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Apply a saved theme before first paint so the page doesn't flash the wrong colors.
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="masthead">
+    <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Dark mode" title="Dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+        <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <h1>La Divina Commedia</h1>
+    <nav class="tabs" role="tablist" aria-label="Text">
+      <button role="tab" id="tab-it" data-lang="it" aria-controls="reader">Italiano</button>
+      <button role="tab" id="tab-en" data-lang="en" aria-controls="reader">English</button>
+    </nav>
+  </header>
+
+  <nav class="controls" aria-label="Navigation">
+    <div class="cantiche" role="group" aria-label="Cantica">
+      <button data-cantica="Inferno">Inferno</button>
+      <button data-cantica="Purgatorio">Purgatorio</button>
+      <button data-cantica="Paradiso">Paradiso</button>
+    </div>
+    <div class="canto-nav">
+      <button class="prev" aria-label="Previous canto">‹</button>
+      <label class="canto-pick">
+        <span class="visually-hidden">Canto</span>
+        <select id="canto-select"></select>
+      </label>
+      <button class="next" aria-label="Next canto">›</button>
+    </div>
+  </nav>
+
+  <main id="reader" role="tabpanel" tabindex="-1">
+    <h2 id="canto-title"></h2>
+    <p class="hint" id="hint"></p>
+    <div id="poem" class="poem" aria-live="polite"></div>
+    <nav class="bottom-nav" aria-label="Canto">
+      <button class="prev">‹ <span></span></button>
+      <button class="next"><span></span> ›</button>
+    </nav>
+  </main>
+
+  <footer class="credits">
+    <p><strong>Italiano:</strong> the text of Giorgio Petrocchi's critical edition,
+      <cite>La Commedia secondo l'antica vulgata</cite> (Le Lettere, Firenze, 1994), as transcribed on
+      <a href="https://it.wikisource.org/wiki/Divina_Commedia">Italian Wikisource</a>.</p>
+    <p><strong>English:</strong> Henry Wadsworth Longfellow's translation (1867), from
+      <a href="https://www.gutenberg.org/ebooks/1004">Project Gutenberg eBook #1004</a>.</p>
+    <p>The two texts are independent: the Italian tab shows Dante's text and the English tab shows Longfellow's.
+      The line-by-line translations revealed by tapping a line are literal study aids written for this site,
+      not part of either published text.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
